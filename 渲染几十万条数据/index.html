@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>前端性能优化--渲染几十万条数据</title>
+  </head>
+  <body>
+    <ul></ul>
+    <script>
+      const starttime = new Date().getTime();
+      const total = 50000; //渲染数据的条数
+      const once = 100; //一次性渲染的个数
+
+      const loopcount = Math.ceil(total / once);
+
+      let rendercount = 0;
+
+      const ul = document.querySelector("ul");
+
+      // 添加数据的方法
+      function add() {
+        //创建虚拟节点
+        const frame = document.createDocumentFragment();
+        for (let index = 0; index < once; index++) {
+          const li = document.createElement("li");
+          li.innerHTML = Math.floor(Math.random() * 100000);
+        //   ul.appendChild(li);
+          frame.appendChild(li);
+        }
+        ul.appendChild(frame);
+        rendercount++;
+
+        loop();
+      }
+
+      function loop() {
+        if (rendercount < loopcount) {
+          window.requestAnimationFrame(add);
+        } else {
+          let endtime = new Date().getTime();
+          let runtime  = endtime - starttime
+          console.log('runtime: ', runtime);
+        }
+      }
+      loop();
+    </script>
+  </body>
+</html>
